@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/lib/provider/next-theme-provider";
-
+import { ConvexClientProvider } from "@/lib/provider/convex-provider";
+ 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -25,17 +26,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <ConvexClientProvider>
          <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           enableSystem
         >
-
         {children}
         </ThemeProvider>
+    </ConvexClientProvider>
         </body>
     </html>
+
   );
 }

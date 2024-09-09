@@ -16,6 +16,10 @@ import {
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
+import { ModeToggle } from "../mode-toggle";
+import { SignInButton, UserButton } from "@clerk/nextjs";
+import { useConvexAuth } from "convex/react";
+import { Spinner } from "../spinner";
 
 const routes = [
   { title: "Features", href: "#features" },
@@ -62,6 +66,8 @@ const components: { title: string; href: string; description: string }[] = [
 ];
 
 const Header = () => {
+  const {isAuthenticated , isLoading} = useConvexAuth()
+   
   const [path, setPath] = useState<string | null>(null);
 
   useEffect(() => {
@@ -72,7 +78,7 @@ const Header = () => {
     <header className="p-4 flex justify-center items-center">
       <Link href="/" className="w-full flex gap-2 justify-left items-center">
         <Image src={Logo} alt="Cypress Logo" width={25} height={25} />
-        <span className="font-semibold dark:text-white text-xl">cypress.</span>
+        <span className="font-semibold dark:text-white text-xl">Cypress.</span>
       </Link>
       <NavigationMenu className="hidden md:block">
         <NavigationMenuList className="gap-6">
@@ -156,17 +162,25 @@ const Header = () => {
           </NavigationMenuLink>
         </NavigationMenuList>
       </NavigationMenu>
-      <aside className="flex w-full gap-2 justify-end">
-        <Link href="/login">
-          <Button variant="secondary" className="p-3 hidden sm:block">
-            Login
-          </Button>
-        </Link>
-        <Link href="/signup">
-          <Button variant="default" className="whitespace-nowrap p-2">
-            Sign Up
-          </Button>
-        </Link>
+      <aside className="flex w-full gap-2 justify-end items-center">
+        
+        {isLoading && <Spinner />}
+        {!isAuthenticated && !isLoading && (
+          <>
+            <SignInButton mode="modal">
+              <Button className="p-3" size="lg">Log in</Button>
+            </SignInButton>
+          </>
+        )}
+        {isAuthenticated && !isLoading && (
+          <>
+            <Button variant="ghost" size="lg" asChild>
+              <Link href="/documents">Enter Cypress</Link>
+            </Button>
+            <UserButton afterSignOutUrl="/" />
+          </>
+        )}
+        <ModeToggle />
       </aside>
     </header>
   );

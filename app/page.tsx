@@ -1,3 +1,5 @@
+"use client";
+
 import TitleSection from "@/components/landing-page/title-section";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -9,14 +11,19 @@ import CheckIcon from "../public/icons/check.svg";
 import { CLIENTS, PRICING_CARDS, PRICING_PLANS, USERS } from "@/lib/constant";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { twMerge } from "tailwind-merge";
-import { randomUUID } from "crypto";
 import clsx from "clsx";
 import CustomCard from "@/components/landing-page/custom-card";
 import { CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 import Header from "@/components/landing-page/header";
-import Link from "next/link";
+import { SignInButton } from "@clerk/nextjs";
+import { Footer } from "@/components/landing-page/footer";
+import { useConvexAuth } from "convex/react";
+import { Spinner } from "@/components/spinner";
 
 const page = () => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { isAuthenticated, isLoading } = useConvexAuth();
+
   return (
     <>
       <Header />
@@ -26,32 +33,64 @@ const page = () => {
           title="All-In-One Collaboration and Productivity Platform"
         />
         <div className="flex items-center justify-center mt-10">
-          <div style={{ transform: 'none' }}>
-            <Link href="/signup">
-              <button className="relative inline-block p-px font-semibold leading-6 text-white no-underline bg-gray-800 shadow-2xl cursor-pointer group rounded-xl shadow-zinc-900">
-                <span className="absolute inset-0 overflow-hidden rounded-xl">
-                  <span className="absolute inset-0 rounded-xl bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(56,189,248,0.6)_0%,rgba(56,189,248,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
-                </span>
-                <div className="relative z-10 flex items-center px-6 py-3 space-x-2 rounded-xl bg-gray-950/50 ring-1 ring-white/10 ">
-                  <span className="text-xl">Get Cypress Free</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                    data-slot="icon"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
-                      clipRule="evenodd"
-                    ></path>
-                  </svg>
-                </div>
-                <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-emerald-400/0 via-gray-400/90 to-emerald-400/0 transition-opacity duration-500 group-hover:opacity-40"></span>
-              </button>
-            </Link>
+          <div style={{ transform: "none" }}>
+            {isLoading && <Spinner  />}
+            {!isAuthenticated && !isLoading && (
+              <>
+                <SignInButton mode="modal">
+                  <button className="relative inline-block p-px font-semibold leading-6 text-white no-underline bg-gray-800 shadow-2xl cursor-pointer group rounded-xl shadow-zinc-900">
+                    <span className="absolute inset-0 overflow-hidden rounded-xl">
+                      <span className="absolute inset-0 rounded-xl bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(56,189,248,0.6)_0%,rgba(56,189,248,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
+                    </span>
+                    <div className="relative z-10 flex items-center px-6 py-3 space-x-2 rounded-xl bg-gray-950/50 ring-1 ring-white/10 ">
+                      <span className="text-xl">Get Cypress Free</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                        data-slot="icon"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
+                          clipRule="evenodd"
+                        ></path>
+                      </svg>
+                    </div>
+                    <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-emerald-400/0 via-gray-400/90 to-emerald-400/0 transition-opacity duration-500 group-hover:opacity-40"></span>
+                  </button>
+                </SignInButton>
+              </>
+            )}
+            {isAuthenticated && !isLoading && (
+              <>
+                  <button className="relative inline-block p-px font-semibold leading-6 text-white no-underline bg-gray-800 shadow-2xl cursor-pointer group rounded-xl shadow-zinc-900">
+                    <span className="absolute inset-0 overflow-hidden rounded-xl">
+                      <span className="absolute inset-0 rounded-xl bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(56,189,248,0.6)_0%,rgba(56,189,248,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
+                    </span>
+                    <div className="relative z-10 flex items-center px-6 py-3 space-x-2 rounded-xl bg-gray-950/50 ring-1 ring-white/10 ">
+                      <span className="text-xl">Enter Cypress</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                        data-slot="icon"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
+                          clipRule="evenodd"
+                        ></path>
+                      </svg>
+                    </div>
+                    <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-emerald-400/0 via-gray-400/90 to-emerald-400/0 transition-opacity duration-500 group-hover:opacity-40"></span>
+                  </button>
+              </>
+            )}
           </div>
         </div>
         <div
@@ -215,7 +254,7 @@ const page = () => {
           />
           {[...Array(2)].map((arr, index) => (
             <div
-              key={randomUUID()}
+              key={index}
               className={twMerge(
                 clsx("mt-10 flex flex-nowrap gap-6 self-start", {
                   "flex-row-reverse": index === 1,
@@ -228,7 +267,7 @@ const page = () => {
             >
               {USERS.map((testimonial, index) => (
                 <CustomCard
-                  key={randomUUID()}
+                  key={index}
                   className="w-[500px]
                   shrink-0s
                   rounded-xl
@@ -347,7 +386,7 @@ const page = () => {
                   <small>{card.highlightFeature}</small>
                   {card.features.map((feature) => (
                     <li
-                      key={randomUUID()}
+                      key={feature}
                       className="flex
                       items-center
                       gap-2
@@ -363,7 +402,9 @@ const page = () => {
           ))}
         </div>
       </section>
+      <Footer />
     </>
-  );};
+  );
+};
 
 export default page;
