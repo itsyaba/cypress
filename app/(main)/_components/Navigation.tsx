@@ -2,21 +2,14 @@
 
 import React, { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
-import { useMutation } from "convex/react";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { UserItem } from "./UserItem";
 
-import { toast } from "sonner";
 import {
   ChevronsLeft,
   MenuIcon,
-  Plus,
-  PlusCircle,
-  Search,
-  Settings,
-  Trash,
 } from "lucide-react";
 import {
   Popover,
@@ -25,17 +18,32 @@ import {
 } from "@/components/ui/popover";
 
 const Navigation = () => {
-  const router = useRouter();
+//   const router = useRouter();
   const pathname = usePathname();
   const params = useParams();
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const create = "create";
 
   const isResizingRef = useRef(false);
   const sidebarRef = useRef<ElementRef<"aside">>(null);
   const navbarRef = useRef<ElementRef<"div">>(null);
   const [isResetting, setIsResetting] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
+
+  const resetWidth = () => {
+    if (sidebarRef.current && navbarRef.current) {
+      setIsCollapsed(false);
+      setIsResetting(true);
+
+      sidebarRef.current.style.width = isMobile ? "100%" : "240px";
+      navbarRef.current.style.removeProperty("width");
+      navbarRef.current.style.setProperty(
+        "width",
+        isMobile ? "0" : "calc(100%-240px)",
+      );
+      navbarRef.current.style.setProperty("left", isMobile ? "100%" : "240px");
+      setTimeout(() => setIsResetting(false), 300);
+    }
+  };
 
   useEffect(() => {
     if (isMobile) {
@@ -85,22 +93,6 @@ const Navigation = () => {
     document.removeEventListener("mouseup", handleMouseUp);
   };
 
-  const resetWidth = () => {
-    if (sidebarRef.current && navbarRef.current) {
-      setIsCollapsed(false);
-      setIsResetting(true);
-
-      sidebarRef.current.style.width = isMobile ? "100%" : "240px";
-      navbarRef.current.style.removeProperty("width");
-      navbarRef.current.style.setProperty(
-        "width",
-        isMobile ? "0" : "calc(100%-240px)",
-      );
-      navbarRef.current.style.setProperty("left", isMobile ? "100%" : "240px");
-      setTimeout(() => setIsResetting(false), 300);
-    }
-  };
-
   const collapse = () => {
     if (sidebarRef.current && navbarRef.current) {
       setIsCollapsed(true);
@@ -111,15 +103,6 @@ const Navigation = () => {
       navbarRef.current.style.setProperty("left", "0");
       setTimeout(() => setIsResetting(false), 300);
     }
-  };
-
-  const handleCreate = () => console.log("Handle Create")
-
-    toast.promise(promise, {
-      loading: "Creating a new note....",
-      success: "New note created.",
-      error: "Failed to create a note.",
-    });
   };
 
   return (
@@ -159,7 +142,7 @@ const Navigation = () => {
               side={isMobile ? "bottom" : "right"}
               className="w-72 p-0"
             >
-              <TrashBox />
+              {/* <TrashBox /> */}
             </PopoverContent>
           </Popover>
         </div>
@@ -178,7 +161,8 @@ const Navigation = () => {
         )}
       >
         {!!params.documentId ? (
-          <Navbar isCollapsed={isCollapsed} onResetWidth={resetWidth} />
+//           <Navbar isCollapsed={isCollapsed} onResetWidth={resetWidth} />
+<h1>testing</h1>
         ) : (
           <nav
             className={cn(
