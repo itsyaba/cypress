@@ -2,7 +2,7 @@
 
 import React, { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { UserItem } from "./UserItem";
@@ -10,15 +10,24 @@ import { UserItem } from "./UserItem";
 import {
   ChevronsLeft,
   MenuIcon,
+  Plus,
+  PlusCircle,
+  Search,
+  Settings,
+  Trash,
 } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Item } from "./Item";
+import { DocumentList } from "./DocumentList";
+import { toast } from "sonner";
+import { create } from "@/convex/documents";
 
 const Navigation = () => {
-//   const router = useRouter();
+  const router = useRouter();
   const pathname = usePathname();
   const params = useParams();
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -51,6 +60,7 @@ const Navigation = () => {
     } else {
       resetWidth();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMobile]);
 
   useEffect(() => {
@@ -105,6 +115,18 @@ const Navigation = () => {
     }
   };
 
+  const handleCreate = () => {
+    const promise = create({ title: "Untitled" }).then((documentId) =>
+      router.push(`/documents/${documentId}`)
+    );
+
+    toast.promise(promise, {
+      loading: "Creating a new note....",
+      success: "New note created.",
+      error: "Failed to create a note.",
+    });
+  };
+
   return (
     <>
       <aside
@@ -128,15 +150,17 @@ const Navigation = () => {
         <div>
           <UserItem />
           {/* <Item label="Search" icon={Search} isSearch onClick={search.onOpen} /> */}
+          <Item label="Search" icon={Search} isSearch onClick={handleCreate} />
+          <Item label="Settings" icon={Settings} onClick={handleCreate} />
           {/* <Item label="Settings" icon={Settings} onClick={settings.onOpen} /> */}
-          {/* <Item onClick={handleCreate} label="New page" icon={PlusCircle} /> */}
+          <Item onClick={handleCreate} label="New page" icon={PlusCircle} />
         </div>
         <div className="mt-4">
-          {/* <DocumentList /> */}
-          {/* <Item onClick={handleCreate} icon={Plus} label="Add a page" /> */}
+          <DocumentList />
+          <Item onClick={handleCreate} icon={Plus} label="Add a page" />
           <Popover>
             <PopoverTrigger className="mt-4 w-full">
-              {/* <Item label="Trash" icon={Trash} /> */}
+              <Item label="Trash" icon={Trash} />
             </PopoverTrigger>
             <PopoverContent
               side={isMobile ? "bottom" : "right"}
