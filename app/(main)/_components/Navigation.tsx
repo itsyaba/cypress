@@ -24,13 +24,15 @@ import {
 import { Item } from "./Item";
 import { DocumentList } from "./DocumentList";
 import { toast } from "sonner";
-import { create } from "@/convex/documents";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 const Navigation = () => {
   const router = useRouter();
   const pathname = usePathname();
   const params = useParams();
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const create = useMutation(api.documents.create);
 
   const isResizingRef = useRef(false);
   const sidebarRef = useRef<ElementRef<"aside">>(null);
