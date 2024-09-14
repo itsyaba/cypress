@@ -26,6 +26,7 @@ import { DocumentList } from "./DocumentList";
 import { toast } from "sonner";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { TrashBox } from "./Trashbox";
 
 const Navigation = () => {
   const router = useRouter();
@@ -168,7 +169,7 @@ const Navigation = () => {
               side={isMobile ? "bottom" : "right"}
               className="w-72 p-0"
             >
-              {/* <TrashBox /> */}
+              <TrashBox />
             </PopoverContent>
           </Popover>
         </div>
