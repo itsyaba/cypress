@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import {Toaster } from "sonner"
+import { Toaster } from "sonner";
 
 import "./globals.css";
 
 import { ThemeProvider } from "@/lib/provider/next-theme-provider";
 import { ConvexClientProvider } from "@/lib/provider/convex-provider";
+import { EdgeStoreProvider } from "@/lib/edgestore";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,18 +32,15 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-      <ConvexClientProvider>
-         <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-        >
-          <Toaster position="bottom-center" />
-        {children}
-        </ThemeProvider>
-    </ConvexClientProvider>
-        </body>
+        <ConvexClientProvider>
+          <EdgeStoreProvider>
+            <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+              <Toaster position="bottom-center" />
+              {children}
+            </ThemeProvider>
+          </EdgeStoreProvider>
+        </ConvexClientProvider>
+      </body>
     </html>
-
   );
 }
