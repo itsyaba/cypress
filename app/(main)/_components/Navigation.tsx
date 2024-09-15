@@ -2,11 +2,16 @@
 
 import React, { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
+import { useMutation } from "convex/react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
+import { api } from "@/convex/_generated/api";
+import { DocumentList } from "./DocumentList";
+import { Item } from "./Item";
 import { UserItem } from "./UserItem";
 
+import { toast } from "sonner";
 import {
   ChevronsLeft,
   MenuIcon,
@@ -21,14 +26,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Item } from "./Item";
-import { DocumentList } from "./DocumentList";
-import { toast } from "sonner";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { useSearch } from "@/hooks/useSearch";
+import { useSettings } from "@/hooks/useSetting";
+import { Navbar } from "./Navbar";
 import { TrashBox } from "./Trashbox";
 
 const Navigation = () => {
+  const search = useSearch();
+  const settings = useSettings();
   const router = useRouter();
   const pathname = usePathname();
   const params = useParams();
@@ -40,22 +45,6 @@ const Navigation = () => {
   const navbarRef = useRef<ElementRef<"div">>(null);
   const [isResetting, setIsResetting] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
-
-  const resetWidth = () => {
-    if (sidebarRef.current && navbarRef.current) {
-      setIsCollapsed(false);
-      setIsResetting(true);
-
-      sidebarRef.current.style.width = isMobile ? "100%" : "240px";
-      navbarRef.current.style.removeProperty("width");
-      navbarRef.current.style.setProperty(
-        "width",
-        isMobile ? "0" : "calc(100%-240px)",
-      );
-      navbarRef.current.style.setProperty("left", isMobile ? "100%" : "240px");
-      setTimeout(() => setIsResetting(false), 300);
-    }
-  };
 
   useEffect(() => {
     if (isMobile) {
@@ -106,6 +95,22 @@ const Navigation = () => {
     document.removeEventListener("mouseup", handleMouseUp);
   };
 
+  const resetWidth = () => {
+    if (sidebarRef.current && navbarRef.current) {
+      setIsCollapsed(false);
+      setIsResetting(true);
+
+      sidebarRef.current.style.width = isMobile ? "100%" : "240px";
+      navbarRef.current.style.removeProperty("width");
+      navbarRef.current.style.setProperty(
+        "width",
+        isMobile ? "0" : "calc(100%-240px)",
+      );
+      navbarRef.current.style.setProperty("left", isMobile ? "100%" : "240px");
+      setTimeout(() => setIsResetting(false), 300);
+    }
+  };
+
   const collapse = () => {
     if (sidebarRef.current && navbarRef.current) {
       setIsCollapsed(true);
@@ -120,7 +125,7 @@ const Navigation = () => {
 
   const handleCreate = () => {
     const promise = create({ title: "Untitled" }).then((documentId) =>
-      router.push(`/documents/${documentId}`)
+      router.push(`/documents/${documentId}`),
     );
 
     toast.promise(promise, {
@@ -152,10 +157,8 @@ const Navigation = () => {
         </div>
         <div>
           <UserItem />
-          {/* <Item label="Search" icon={Search} isSearch onClick={search.onOpen} /> */}
-          <Item label="Search" icon={Search} isSearch onClick={handleCreate} />
-          <Item label="Settings" icon={Settings} onClick={handleCreate} />
-          {/* <Item label="Settings" icon={Settings} onClick={settings.onOpen} /> */}
+          <Item label="Search" icon={Search} isSearch onClick={search.onOpen} />
+          <Item label="Settings" icon={Settings} onClick={settings.onOpen} />
           <Item onClick={handleCreate} label="New page" icon={PlusCircle} />
         </div>
         <div className="mt-4">
@@ -188,8 +191,7 @@ const Navigation = () => {
         )}
       >
         {!!params.documentId ? (
-//           <Navbar isCollapsed={isCollapsed} onResetWidth={resetWidth} />
-<h1>testing</h1>
+          <Navbar isCollapsed={isCollapsed} onResetWidth={resetWidth} />
         ) : (
           <nav
             className={cn(
