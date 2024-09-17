@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import dynamic from "next/dynamic";
@@ -11,7 +10,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
-import Editor from "@/components/editor";
 
 interface DocumentIdPageProps {
   params: {
@@ -20,7 +18,10 @@ interface DocumentIdPageProps {
 }
 
 const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
-  // const Editor = useMemo(() => dynamic(() => import("@/components/editor"), { ssr: false }), []);
+  const Editor = useMemo(
+    () => dynamic(() => import("@/components/editor"), { ssr: false }),
+    [],
+  );
 
   const document = useQuery(api.documents.getById, {
     documentId: params.documentId,
@@ -57,10 +58,14 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
 
   return (
     <div className="pb-40">
-      <Cover url={document.coverImage} />
+      <Cover preview url={document.coverImage} />
       <div className="mx-auto md:max-w-3xl lg:max-w-4xl">
-        <Toolbar initialData={document} />
-        <Editor onChange={onChange} initialContent={document.content} />
+        <Toolbar preview initialData={document} />
+        <Editor
+          editable={false}
+          onChange={onChange}
+          initialContent={document.content}
+        />
       </div>
     </div>
   );
